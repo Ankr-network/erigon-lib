@@ -371,28 +371,24 @@ const (
 	AccountVals        = "AccountVals"
 	AccountHistoryKeys = "AccountHistoryKeys"
 	AccountHistoryVals = "AccountHistoryVals"
-	AccountSettings    = "AccountSettings"
 	AccountIdx         = "AccountIdx"
 
 	StorageKeys        = "StorageKeys"
 	StorageVals        = "StorageVals"
 	StorageHistoryKeys = "StorageHistoryKeys"
 	StorageHistoryVals = "StorageHistoryVals"
-	StorageSettings    = "StorageSettings"
 	StorageIdx         = "StorageIdx"
 
 	CodeKeys        = "CodeKeys"
 	CodeVals        = "CodeVals"
 	CodeHistoryKeys = "CodeHistoryKeys"
 	CodeHistoryVals = "CodeHistoryVals"
-	CodeSettings    = "CodeSettings"
 	CodeIdx         = "CodeIdx"
 
 	CommitmentKeys        = "CommitmentKeys"
 	CommitmentVals        = "CommitmentVals"
 	CommitmentHistoryKeys = "CommitmentHistoryKeys"
 	CommitmentHistoryVals = "CommitmentHistoryVals"
-	CommitmentSettings    = "CommitmentSettings"
 	CommitmentIdx         = "CommitmentIdx"
 
 	LogAddressKeys = "LogAddressKeys"
@@ -427,13 +423,10 @@ const (
 	BeaconState = "BeaconState"
 	// [slot] => [signature + block without execution payload]
 	BeaconBlocks = "BeaconBlock"
-	// [slot] => [attestation list (ssz)]
+	// [slot] => [attestation list (custom encoding)]
 	Attestetations = "Attestetations"
-
-	// Erigon-CL indexing
-
-	// [Slot] => [Root (block root/state root/eth1 root)]
-	SlotRootIndex = "SlotRootIndex"
+	// [slot] => [Finalized block root]
+	FinalizedBlockRoots = "FinalizedBlockRoots"
 	// [Root (block root/state root/eth1 root)] => Slot
 	RootSlotIndex = "RootSlotIndex"
 
@@ -540,28 +533,24 @@ var ChaindataTables = []string{
 	AccountVals,
 	AccountHistoryKeys,
 	AccountHistoryVals,
-	AccountSettings,
 	AccountIdx,
 
 	StorageKeys,
 	StorageVals,
 	StorageHistoryKeys,
 	StorageHistoryVals,
-	StorageSettings,
 	StorageIdx,
 
 	CodeKeys,
 	CodeVals,
 	CodeHistoryKeys,
 	CodeHistoryVals,
-	CodeSettings,
 	CodeIdx,
 
 	CommitmentKeys,
 	CommitmentVals,
 	CommitmentHistoryKeys,
 	CommitmentHistoryVals,
-	CommitmentSettings,
 	CommitmentIdx,
 
 	LogAddressKeys,
@@ -589,7 +578,7 @@ var ChaindataTables = []string{
 	// Beacon stuff
 	BeaconState,
 	BeaconBlocks,
-	SlotRootIndex,
+	FinalizedBlockRoots,
 	RootSlotIndex,
 	Attestetations,
 	LightClient,
@@ -680,9 +669,11 @@ var ChaindataTablesCfg = TableCfg{
 
 	AccountKeys:           {Flags: DupSort},
 	AccountHistoryKeys:    {Flags: DupSort},
+	AccountHistoryVals:    {Flags: DupSort},
 	AccountIdx:            {Flags: DupSort},
 	StorageKeys:           {Flags: DupSort},
 	StorageHistoryKeys:    {Flags: DupSort},
+	StorageHistoryVals:    {Flags: DupSort},
 	StorageIdx:            {Flags: DupSort},
 	CodeKeys:              {Flags: DupSort},
 	CodeHistoryKeys:       {Flags: DupSort},

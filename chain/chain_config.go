@@ -36,47 +36,48 @@ type Config struct {
 
 	Consensus ConsensusName `json:"consensus,omitempty"` // aura, ethash or clique
 
-	HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"` // Homestead switch block (nil = no fork, 0 = already homestead)
+	// *Block fields activate the corresponding hard fork at a certain block number,
+	// while *Time fields do so based on the block's time stamp.
+	// nil means that the hard-fork is not scheduled,
+	// while 0 means that it's already activated from genesis.
 
-	DAOForkBlock   *big.Int `json:"daoForkBlock,omitempty"`   // TheDAO hard-fork switch block (nil = no fork)
-	DAOForkSupport bool     `json:"daoForkSupport,omitempty"` // Whether the nodes supports or opposes the DAO hard-fork
+	// ETH mainnet upgrades
+	// See https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades
+	HomesteadBlock        *big.Int `json:"homesteadBlock,omitempty"`
+	DAOForkBlock          *big.Int `json:"daoForkBlock,omitempty"`
+	TangerineWhistleBlock *big.Int `json:"eip150Block,omitempty"`
+	SpuriousDragonBlock   *big.Int `json:"eip155Block,omitempty"`
+	ByzantiumBlock        *big.Int `json:"byzantiumBlock,omitempty"`
+	ConstantinopleBlock   *big.Int `json:"constantinopleBlock,omitempty"`
+	PetersburgBlock       *big.Int `json:"petersburgBlock,omitempty"`
+	IstanbulBlock         *big.Int `json:"istanbulBlock,omitempty"`
+	MuirGlacierBlock      *big.Int `json:"muirGlacierBlock,omitempty"`
+	BerlinBlock           *big.Int `json:"berlinBlock,omitempty"`
+	LondonBlock           *big.Int `json:"londonBlock,omitempty"`
+	ArrowGlacierBlock     *big.Int `json:"arrowGlacierBlock,omitempty"`
+	GrayGlacierBlock      *big.Int `json:"grayGlacierBlock,omitempty"`
 
-	// Tangerine Whistle (EIP150) implements the Gas price changes (https://github.com/ethereum/EIPs/issues/150)
-	TangerineWhistleBlock *big.Int    `json:"eip150Block,omitempty"` // EIP150 HF block (nil = no fork)
-	TangerineWhistleHash  common.Hash `json:"eip150Hash,omitempty"`  // EIP150 HF hash (needed for header only clients as only gas pricing changed)
-
-	SpuriousDragonBlock *big.Int `json:"eip155Block,omitempty"` // Spurious Dragon HF block
-
-	ByzantiumBlock      *big.Int `json:"byzantiumBlock,omitempty"`      // Byzantium switch block (nil = no fork, 0 = already on byzantium)
-	ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"` // Constantinople switch block (nil = no fork, 0 = already activated)
-	PetersburgBlock     *big.Int `json:"petersburgBlock,omitempty"`     // Petersburg switch block (nil = same as Constantinople)
-	IstanbulBlock       *big.Int `json:"istanbulBlock,omitempty"`       // Istanbul switch block (nil = no fork, 0 = already on istanbul)
-	MuirGlacierBlock    *big.Int `json:"muirGlacierBlock,omitempty"`    // EIP-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)
-	BerlinBlock         *big.Int `json:"berlinBlock,omitempty"`         // Berlin switch block (nil = no fork, 0 = already on berlin)
-	LondonBlock         *big.Int `json:"londonBlock,omitempty"`         // London switch block (nil = no fork, 0 = already on london)
-	ArrowGlacierBlock   *big.Int `json:"arrowGlacierBlock,omitempty"`   // EIP-4345 (bomb delay) switch block (nil = no fork, 0 = already activated)
-	GrayGlacierBlock    *big.Int `json:"grayGlacierBlock,omitempty"`    // EIP-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)
-
-	// EIP-3675: Upgrade consensus to Proof-of-Stake
+	// EIP-3675: Upgrade consensus to Proof-of-Stake (a.k.a. "Paris", "The Merge")
 	TerminalTotalDifficulty       *big.Int `json:"terminalTotalDifficulty,omitempty"`       // The merge happens when terminal total difficulty is reached
 	TerminalTotalDifficultyPassed bool     `json:"terminalTotalDifficultyPassed,omitempty"` // Disable PoW sync for networks that have already passed through the Merge
 	MergeNetsplitBlock            *big.Int `json:"mergeNetsplitBlock,omitempty"`            // Virtual fork after The Merge to use as a network splitter; see FORK_NEXT_VALUE in EIP-3675
 
-	ShanghaiTime     *big.Int `json:"shanghaiTime,omitempty"`     // Shanghai switch time (nil = no fork, 0 = already activated)
-	CancunTime       *big.Int `json:"cancunTime,omitempty"`       // Cancun switch time (nil = no fork, 0 = already activated)
-	ShardingForkTime *big.Int `json:"shardingForkTime,omitempty"` // Mini-Danksharding switch block (nil = no fork, 0 = already activated)
+	// Mainnet fork scheduling switched from block numbers to timestamps after The Merge
+	ShanghaiTime *big.Int `json:"shanghaiTime,omitempty"`
+	CancunTime   *big.Int `json:"cancunTime,omitempty"`
+	PragueTime   *big.Int `json:"pragueTime,omitempty"`
 
 	// Parlia fork blocks
-	RamanujanBlock  *big.Int `json:"ramanujanBlock,omitempty" toml:",omitempty"`  // ramanujanBlock switch block (nil = no fork, 0 = already activated)
-	NielsBlock      *big.Int `json:"nielsBlock,omitempty" toml:",omitempty"`      // nielsBlock switch block (nil = no fork, 0 = already activated)
-	MirrorSyncBlock *big.Int `json:"mirrorSyncBlock,omitempty" toml:",omitempty"` // mirrorSyncBlock switch block (nil = no fork, 0 = already activated)
-	BrunoBlock      *big.Int `json:"brunoBlock,omitempty" toml:",omitempty"`      // brunoBlock switch block (nil = no fork, 0 = already activated)
-	EulerBlock      *big.Int `json:"eulerBlock,omitempty" toml:",omitempty"`      // eulerBlock switch block (nil = no fork, 0 = already activated)
-	GibbsBlock      *big.Int `json:"gibbsBlock,omitempty" toml:",omitempty"`      // gibbsBlock switch block (nil = no fork, 0 = already activated)
-	NanoBlock       *big.Int `json:"nanoBlock,omitempty" toml:",omitempty"`       // nanoBlock switch block (nil = no fork, 0 = already activated)
-	MoranBlock      *big.Int `json:"moranBlock,omitempty" toml:",omitempty"`      // moranBlock switch block (nil = no fork, 0 = already activated)
+	RamanujanBlock  *big.Int `json:"ramanujanBlock,omitempty" toml:",omitempty"`
+	NielsBlock      *big.Int `json:"nielsBlock,omitempty" toml:",omitempty"`
+	MirrorSyncBlock *big.Int `json:"mirrorSyncBlock,omitempty" toml:",omitempty"`
+	BrunoBlock      *big.Int `json:"brunoBlock,omitempty" toml:",omitempty"`
+	EulerBlock      *big.Int `json:"eulerBlock,omitempty" toml:",omitempty"`
+	GibbsBlock      *big.Int `json:"gibbsBlock,omitempty" toml:",omitempty"`
+	NanoBlock       *big.Int `json:"nanoBlock,omitempty" toml:",omitempty"`
+	MoranBlock      *big.Int `json:"moranBlock,omitempty" toml:",omitempty"`
 
-	// Gnosis Chain fork blocks
+	// Forks specific to Gnosis Chain
 	PosdaoBlock *big.Int `json:"posdaoBlock,omitempty"`
 
 	Eip1559FeeCollector           *common.Address `json:"eip1559FeeCollector,omitempty"`           // (Optional) Address where burnt EIP-1559 fees go to
@@ -109,11 +110,10 @@ func (c *Config) String() string {
 		)
 	}
 
-	return fmt.Sprintf("{ChainID: %v, Homestead: %v, DAO: %v, DAO Support: %v, Tangerine Whistle: %v, Spurious Dragon: %v, Byzantium: %v, Constantinople: %v, Petersburg: %v, Istanbul: %v, Muir Glacier: %v, Berlin: %v, London: %v, Arrow Glacier: %v, Gray Glacier: %v, Terminal Total Difficulty: %v, Merge Netsplit: %v, Shanghai: %v, Cancun: %v, Engine: %v}",
+	return fmt.Sprintf("{ChainID: %v, Homestead: %v, DAO: %v, Tangerine Whistle: %v, Spurious Dragon: %v, Byzantium: %v, Constantinople: %v, Petersburg: %v, Istanbul: %v, Muir Glacier: %v, Berlin: %v, London: %v, Arrow Glacier: %v, Gray Glacier: %v, Terminal Total Difficulty: %v, Merge Netsplit: %v, Shanghai: %v, Cancun: %v, Prague: %v, Engine: %v}",
 		c.ChainID,
 		c.HomesteadBlock,
 		c.DAOForkBlock,
-		c.DAOForkSupport,
 		c.TangerineWhistleBlock,
 		c.SpuriousDragonBlock,
 		c.ByzantiumBlock,
@@ -129,6 +129,7 @@ func (c *Config) String() string {
 		c.MergeNetsplitBlock,
 		c.ShanghaiTime,
 		c.CancunTime,
+		c.PragueTime,
 		engine,
 	)
 }
@@ -297,14 +298,14 @@ func (c *Config) IsShanghai(time uint64) bool {
 	return isForked(c.ShanghaiTime, time)
 }
 
-// IsSharding returns whether time is either equal to the Mini-Danksharding fork time or greater.
-func (c *Config) IsSharding(time uint64) bool {
-	return isForked(c.ShardingForkTime, time)
-}
-
 // IsCancun returns whether time is either equal to the Cancun fork time or greater.
 func (c *Config) IsCancun(time uint64) bool {
 	return isForked(c.CancunTime, time)
+}
+
+// IsPrague returns whether time is either equal to the Prague fork time or greater.
+func (c *Config) IsPrague(time uint64) bool {
+	return isForked(c.PragueTime, time)
 }
 
 func (c *Config) IsEip1559FeeCollector(num uint64) bool {
@@ -329,32 +330,30 @@ func (c *Config) CheckCompatible(newcfg *Config, height uint64) *ConfigCompatErr
 	return lasterr
 }
 
-type forkPoint struct {
-	name    string
-	block   *big.Int
-	canSkip bool // if true, the fork may be nil and next fork is still allowed
+type forkBlockNumber struct {
+	name        string
+	blockNumber *big.Int
+	optional    bool // if true, the fork may be nil and next fork is still allowed
 }
 
-func (c *Config) forkPoints() []forkPoint {
-	return []forkPoint{
-		{name: "homesteadBlock", block: c.HomesteadBlock},
-		{name: "daoForkBlock", block: c.DAOForkBlock, canSkip: true},
-		{name: "eip150Block", block: c.TangerineWhistleBlock},
-		{name: "eip155Block", block: c.SpuriousDragonBlock},
-		{name: "byzantiumBlock", block: c.ByzantiumBlock},
-		{name: "constantinopleBlock", block: c.ConstantinopleBlock},
-		{name: "petersburgBlock", block: c.PetersburgBlock},
-		{name: "istanbulBlock", block: c.IstanbulBlock},
-		{name: "muirGlacierBlock", block: c.MuirGlacierBlock, canSkip: true},
-		{name: "eulerBlock", block: c.EulerBlock, canSkip: true},
-		{name: "gibbsBlock", block: c.GibbsBlock, canSkip: true},
-		{name: "berlinBlock", block: c.BerlinBlock},
-		{name: "londonBlock", block: c.LondonBlock},
-		{name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, canSkip: true},
-		{name: "grayGlacierBlock", block: c.GrayGlacierBlock, canSkip: true},
-		{name: "mergeNetsplitBlock", block: c.MergeNetsplitBlock, canSkip: true},
-		// {name: "shanghaiTime", timestamp: c.ShanghaiTime},
-		// {name: "shardingForkTime", timestamp: c.ShardingForkTime},
+func (c *Config) forkBlockNumbers() []forkBlockNumber {
+	return []forkBlockNumber{
+		{name: "homesteadBlock", blockNumber: c.HomesteadBlock},
+		{name: "daoForkBlock", blockNumber: c.DAOForkBlock, optional: true},
+		{name: "eip150Block", blockNumber: c.TangerineWhistleBlock},
+		{name: "eip155Block", blockNumber: c.SpuriousDragonBlock},
+		{name: "byzantiumBlock", blockNumber: c.ByzantiumBlock},
+		{name: "constantinopleBlock", blockNumber: c.ConstantinopleBlock},
+		{name: "petersburgBlock", blockNumber: c.PetersburgBlock},
+		{name: "istanbulBlock", blockNumber: c.IstanbulBlock},
+		{name: "muirGlacierBlock", blockNumber: c.MuirGlacierBlock, optional: true},
+		{name: "eulerBlock", blockNumber: c.EulerBlock, optional: true},
+		{name: "gibbsBlock", blockNumber: c.GibbsBlock, optional: true},
+		{name: "berlinBlock", blockNumber: c.BerlinBlock},
+		{name: "londonBlock", blockNumber: c.LondonBlock},
+		{name: "arrowGlacierBlock", blockNumber: c.ArrowGlacierBlock, optional: true},
+		{name: "grayGlacierBlock", blockNumber: c.GrayGlacierBlock, optional: true},
+		{name: "mergeNetsplitBlock", blockNumber: c.MergeNetsplitBlock, optional: true},
 	}
 }
 
@@ -364,24 +363,24 @@ func (c *Config) CheckConfigForkOrder() error {
 		return nil
 	}
 
-	var lastFork forkPoint
+	var lastFork forkBlockNumber
 
-	for _, fork := range c.forkPoints() {
+	for _, fork := range c.forkBlockNumbers() {
 		if lastFork.name != "" {
 			// Next one must be higher number
-			if lastFork.block == nil && fork.block != nil {
+			if lastFork.blockNumber == nil && fork.blockNumber != nil {
 				return fmt.Errorf("unsupported fork ordering: %v not enabled, but %v enabled at %v",
-					lastFork.name, fork.name, fork.block)
+					lastFork.name, fork.name, fork.blockNumber)
 			}
-			if lastFork.block != nil && fork.block != nil {
-				if lastFork.block.Cmp(fork.block) > 0 {
+			if lastFork.blockNumber != nil && fork.blockNumber != nil {
+				if lastFork.blockNumber.Cmp(fork.blockNumber) > 0 {
 					return fmt.Errorf("unsupported fork ordering: %v enabled at %v, but %v enabled at %v",
-						lastFork.name, lastFork.block, fork.name, fork.block)
+						lastFork.name, lastFork.blockNumber, fork.name, fork.blockNumber)
 				}
 			}
 			// If it was optional and not set, then ignore it
 		}
-		if !fork.canSkip || fork.block != nil {
+		if !fork.optional || fork.blockNumber != nil {
 			lastFork = fork
 		}
 	}
@@ -400,9 +399,6 @@ func (c *Config) checkCompatible(newcfg *Config, head uint64) *ConfigCompatError
 	}
 	if incompatible(c.DAOForkBlock, newcfg.DAOForkBlock, head) {
 		return newCompatError("DAO fork block", c.DAOForkBlock, newcfg.DAOForkBlock)
-	}
-	if c.IsDAOFork(head) && c.DAOForkSupport != newcfg.DAOForkSupport {
-		return newCompatError("DAO fork support flag", c.DAOForkBlock, newcfg.DAOForkBlock)
 	}
 	if incompatible(c.TangerineWhistleBlock, newcfg.TangerineWhistleBlock, head) {
 		return newCompatError("Tangerine Whistle fork block", c.TangerineWhistleBlock, newcfg.TangerineWhistleBlock)
@@ -536,18 +532,6 @@ func (c *CliqueConfig) String() string {
 	return "clique"
 }
 
-// AuRaConfig is the consensus engine configs for proof-of-authority based sealing.
-type AuRaConfig struct {
-	DBPath    string
-	InMemory  bool
-	Etherbase common.Address // same as miner etherbase
-}
-
-// String implements the stringer interface, returning the consensus engine details.
-func (c *AuRaConfig) String() string {
-	return "aura"
-}
-
 type ParliaConfig struct {
 	DBPath   string
 	InMemory bool
@@ -659,8 +643,7 @@ type Rules struct {
 	ChainID                                                 *big.Int
 	IsHomestead, IsTangerineWhistle, IsSpuriousDragon       bool
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
-	IsBerlin, IsLondon, IsShanghai, IsCancun                bool
-	IsSharding                                              bool
+	IsBerlin, IsLondon, IsShanghai, IsCancun, IsPrague      bool
 	IsNano, IsMoran, IsGibbs                                bool
 	IsEip1559FeeCollector                                   bool
 	IsParlia, IsAura                                        bool
@@ -686,6 +669,7 @@ func (c *Config) Rules(num uint64, time uint64) *Rules {
 		IsLondon:              c.IsLondon(num),
 		IsShanghai:            c.IsShanghai(time),
 		IsCancun:              c.IsCancun(time),
+		IsPrague:              c.IsPrague(time),
 		IsNano:                c.IsNano(num),
 		IsMoran:               c.IsMoran(num),
 		IsEip1559FeeCollector: c.IsEip1559FeeCollector(num),

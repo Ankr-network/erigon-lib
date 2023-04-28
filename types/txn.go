@@ -568,7 +568,7 @@ func (a Announcements) DedupCopy() Announcements {
 		sizes:  make([]uint32, unique),
 		hashes: make([]byte, unique*length.Hash),
 	}
-	copy(c.hashes[:], a.hashes[0:length.Hash])
+	copy(c.hashes, a.hashes[0:length.Hash])
 	c.ts[0] = a.ts[0]
 	c.sizes[0] = a.sizes[0]
 	dest := length.Hash
@@ -632,6 +632,12 @@ func (a Announcements) Copy() Announcements {
 }
 
 type Addresses []byte // flatten list of 20-byte addresses
+
+// AddressAt returns an address at the given index in the flattened list.
+// Use this method if you want to reduce memory allocations
+func (h Addresses) AddressAt(i int) common.Address {
+	return *(*[20]byte)(h[i*length.Addr : (i+1)*length.Addr])
+}
 
 func (h Addresses) At(i int) []byte { return h[i*length.Addr : (i+1)*length.Addr] }
 func (h Addresses) Len() int        { return len(h) / length.Addr }
